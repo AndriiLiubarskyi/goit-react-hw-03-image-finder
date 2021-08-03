@@ -40,57 +40,26 @@ class App extends Component {
   fetchImages = () => {
     const { searchQuery, currentPage } = this.state;
     const options = { searchQuery, currentPage };
+
     this.setState({ isLoading: true });
+
     imagesApi
       .fetchImages(options)
       .then(images => {
         this.setState(prevState => ({
           images: [...prevState.images, ...images],
           currentPage: prevState.currentPage + 1,
-          currentPageImages: [...images],
         }));
-        if (images.length === 0) {
-          this.setState({
-            error: 'Nothing was find by your query. Try again.',
-          });
-        }
       })
       .then(() => {
-        window.scrollTo({
-          top: document.documentElement.scrollHeight,
-          behavior: 'smooth',
-        });
-      })
+          window.scrollTo({
+             top: document.documentElement.scrollHeight,
+             behavior: 'smooth',
+          });
+         })
       .catch(error => this.setState({ error }))
       .finally(() => this.setState({ isLoading: false }));
   };
-
-
-  fetchImages = () => {
-    const { searchQuery, currentPage } = this.state;
-    const options = { searchQuery, currentPage };
-
-    this.setState({ isLoading: true });
-
-    imagesApi
-      .fetchImages(options)
-      .then(images => {
-        this.setState(prevState => ({
-          images: [...prevState.images, ...images],
-          currentPage: prevState.currentPage + 1,
-        }));
-        this.scrollDown();
-      })
-      .catch(error => this.setState({ error }))
-      .finally(() => this.setState({ isLoading: false }));
-  };
-
- 
-
-  scrollDown = () => {
-    window.scrollTo(0, 10000)
-  };
-
   handleImageClick = ({ target }) => {
     if (target.nodeName !== 'IMG') {
       return;
@@ -113,7 +82,6 @@ class App extends Component {
   render() {
     const { images, isLoading, showModal, url, tag } = this.state;
     const LoadMoreButton = images.length > 0 && !isLoading;
-
     return (
       <div className={styles.Container}>
         <Searchbar onSubmit={this.onChangeQuery} />
