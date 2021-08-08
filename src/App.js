@@ -24,7 +24,10 @@ class App extends Component {
     if (prevState.searchQuery !== this.state.searchQuery) {
       this.fetchImages();
     }
-  }
+    if (prevState.currentPage > 1) {
+          this.scrollWindow();
+    };
+  };
 
   onChangeQuery = query => {
     this.setState({
@@ -49,14 +52,9 @@ class App extends Component {
         this.setState(prevState => ({
           images: [...prevState.images, ...images],
           currentPage: prevState.currentPage + 1,
+           currentPageImages: [...images],
         }));
       })
-      .then(() => {
-          window.scrollTo({
-             top: document.documentElement.scrollHeight,
-             behavior: 'smooth',
-          });
-         })
       .catch(error => this.setState({ error }))
       .finally(() => this.setState({ isLoading: false }));
   };
@@ -79,6 +77,8 @@ class App extends Component {
     }));
   };
 
+
+  
   render() {
     const { images, isLoading, showModal, url, tag } = this.state;
     const LoadMoreButton = images.length > 0 && !isLoading;
@@ -89,13 +89,23 @@ class App extends Component {
         {isLoading && <GalleryLoader />}
         {LoadMoreButton && <Button onClick={this.fetchImages} />}
         {showModal && (
-        <Modal onClose={this.toggleModal} onClick={this.handleImageClick}>
+          <Modal onClose={this.toggleModal} onClick={this.handleImageClick}>
             <img src={url} alt={tag} />
           </Modal>
         )}
       </div>
     );
   }
+  scrollWindow = () => {
+    setTimeout(() => {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth',
+      })
+    }, 1000);
+  };
 }
+
+
 
 export default App;
